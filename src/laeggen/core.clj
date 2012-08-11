@@ -28,11 +28,12 @@
         (if-let [match-fn (dispatch/find-match-for uri)]
           (enqueue channel
                    (let [r (match-fn request)]
-                     (if (map? r)
-                       r
-                       {:status 200
-                        :headers {"content-type" "text/html"}
-                        :body r})))
+                     (cond
+                      (map? r) r
+                      (nil? r) ((dispatch/find-match-for :404) request)
+                      :default {:status 200
+                                :headers {"content-type" "text/html"}
+                                :body r})))
           (enqueue channel ((dispatch/find-match-for :404) request)))
         (enqueue channel
                  {:status 302
