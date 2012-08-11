@@ -1,6 +1,5 @@
 (ns laeggen.core
   (:require [clojure.tools.logging :as log]
-            [clojure.tools.namespace :refer [find-namespaces-on-classpath]]
             [aleph.formats :refer [bytes->string]]
             [aleph.http :refer [start-http-server]]
             [laeggen.dispatch :as dispatch]
@@ -46,8 +45,5 @@
   (#'main opts channel request))
 
 (defn start [{:keys [port prefix] :as opts}]
-  (doseq [page-ns (filter #(.startsWith (str %) prefix)
-                          (find-namespaces-on-classpath))]
-    (require page-ns :reload-all))
   (def stopfn (start-http-server (partial #'REMOVETHIS opts) {:port port}))
   (log/info "Starting Laeggen... done."))
