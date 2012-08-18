@@ -1,4 +1,4 @@
-(ns laeggen.pages.default
+(ns laeggen.views
   (:require [clojure.java.io :as io]
             [clojure.stacktrace :refer [print-stack-trace]]
             [laeggen.dispatch :refer [urls!]]))

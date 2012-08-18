@@ -3,7 +3,7 @@
             [aleph.formats :refer [bytes->string]]
             [aleph.http :refer [start-http-server]]
             [laeggen.dispatch :as dispatch]
-            [laeggen.pages.default]
+            [laeggen.views]
             [lamina.core :refer [enqueue]])
   (:import (java.net URLDecoder)))
 
