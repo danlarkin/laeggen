@@ -39,3 +39,10 @@
       :specials (merge (:specials urls) (:specials new-urls))})
    urls
    more-urls))
+
+;; urls helpers
+
+(defn redirect-to [url]
+  (fn [request]
+    {:status 301
+     :headers {"location" url}}))
