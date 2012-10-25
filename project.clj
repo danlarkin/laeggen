@@ -1,4 +1,4 @@
-(defproject laeggen "0.1-SNAPSHOT"
+(defproject laeggen "0.2-SNAPSHOT"
   :description ""
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.clojure/tools.logging "0.2.3"]

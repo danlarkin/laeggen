@@ -1,20 +1,22 @@
 (ns laeggen.views
   (:require [clojure.java.io :as io]
             [clojure.stacktrace :refer [print-stack-trace]]
-            [laeggen.dispatch :refer [urls!]]))
+            [laeggen.dispatch :refer [urls]]))
 
 (defn assets [request path]
   (let [path (if (.endsWith path "/")
                (subs path 0 (dec (count path)))
-               path)]
-    (merge
-     {:status 200
-      :body (io/as-file (io/resource (str "assets/" path)))}
-     (cond (.endsWith path ".css")
-           {:headers {"content-type" "text/css"}}
+               path)
+        body (io/as-file (io/resource (str "assets/" path)))]
+    (when body
+      (merge
+       {:status 200
+        :body body}
+       (cond (.endsWith path ".css")
+             {:headers {"content-type" "text/css"}}
 
-           (.endsWith path ".png")
-           {:headers {"content-type" "image/png"}}))))
+             (.endsWith path ".png")
+             {:headers {"content-type" "image/png"}})))))
 
 (defn handler404 [request]
   {:status 404
@@ -27,7 +29,8 @@
    :body (with-out-str
            (print-stack-trace exception))})
 
-(urls!
- #"^/assets/(.*)$" assets
- :404 handler404
- :500 handler500)
+(def default-urls
+  (urls
+   #"^/assets/(.*)$" assets
+   :404 handler404
+   :500 handler500))
