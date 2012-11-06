@@ -59,8 +59,8 @@
   (let [stop-fn (start-http-server
                  (partial main
                           (update-in opts [:urls]
-                                     dispatch/merge-urls
-                                     views/default-urls))
+                                     (partial dispatch/merge-urls
+                                              views/default-urls)))
                  {:port port
                   :websocket websocket})]
     (log/info "Starting Laeggen... done.")
