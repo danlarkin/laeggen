@@ -40,7 +40,7 @@ For example:
   (dispatch/urls
    #"^/hello$" #'hello
    ;; the expression "([^/]+)" means to match everything except for "/"
-   #"^/hello/([^/]+) #'hello-person
+   #"^/hello/([^/]+)" #'hello-person
 ```
 
 This matches a request for `http://localhost:2345/hello` to the
