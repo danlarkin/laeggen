@@ -173,6 +173,9 @@ To authenticate to this request with curl, you could use:
 % curl "http://localhost:2345/login?user=Dan&pass=Larkin"
 ```
 
+Note: this is a terrible way of doing authentication because it is
+entirely insecure. It is only put here as an example.
+
 ## Websockets
 
 To be documented.
