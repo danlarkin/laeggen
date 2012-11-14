@@ -120,7 +120,52 @@ Jim is 25 years old.
 
 ## Authentication
 
-To be documented.
+Laeggen believes that you should be responsible for your own
+authentication, so provides helpers built around that idea.
+
+```clojure
+(ns eggplant.baz
+  (:require [laeggen.core :as laeggen]
+            [laeggen.dispatch :as dispatch]
+            [laeggen.auth :as auth]))
+
+(defn home
+  [request]
+  {:status 200 :body "Welcome home."})
+
+(defn login
+  [request]
+  (let [username (-> request :query-string :user)
+        password (-> request :query-string :pass)]
+    (if (auth/authorized? request)
+      {:status 200 :body "You have already logged in"}
+      (if (and (= username "Dan") (= password "Larkin"))
+        (auth/authorize-and-forward! username "/private")
+        {:status 401 :body "Unauthorized!"}))))
+
+(defn private
+  [request]
+  {:status 200 :body "This page is a secret"})
+
+(def my-urls
+  (dispatch/urls
+   #"^/$" #'home
+   #"^/login$" #'login
+   #"^/private$" (auth/authorization-required "/" #'private)))
+```
+
+In this example, notice that in order to protect a page, it should be
+wrapped in the `authorization-required` function, which takes a page
+to redirect to in the event the user *is not* authenticated, and a
+handler to user if the user *is* authenticated (in this case, the
+`private` handler).
+
+Inside the `login` method, it is up to the handler itself to do
+whatever authentication is necessary, and when authenticated, call the
+`authorize-and-forward!` method with the username (or some identifier)
+to store the authorization and redirect to the specified page. The
+`authorized?` method can be called with the request at any time to
+determine whether the identifier has been authenticated.
 
 ## Websockets
 
