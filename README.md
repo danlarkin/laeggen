@@ -167,6 +167,12 @@ to store the authorization and redirect to the specified page. The
 `authorized?` method can be called with the request at any time to
 determine whether the identifier has been authenticated.
 
+To authenticate to this request with curl, you could use:
+
+```
+% curl "http://localhost:2345/login?user=Dan&pass=Larkin"
+```
+
 ## Websockets
 
 To be documented.
