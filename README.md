@@ -94,6 +94,30 @@ optional arguments, or multiple arities:
    #"^/hello2/([^/]+)" #'hello-world2
 ```
 
+### Retrieving a query-string
+
+Sometimes it is desirable to use the query string from the handler, in
+laeggen, the query string is parsed into a map as part of the request:
+
+```clojure
+(defn your-info
+  [request]
+  (let [name (-> request :query-string :name)
+        age (-> request :query-string :age)]
+    {:status 200 :body (str name " is " age " years old.")}))
+
+(def my-urls
+  (dispatch/urls
+   #"^/info$" #'your-info))
+```
+
+Which can be tested using curl:
+
+```
+% curl "http://localhost:2345/info?name=Jim&age=25"
+Jim is 25 years old.
+```
+
 ## Authentication
 
 To be documented.
