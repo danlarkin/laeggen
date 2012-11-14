@@ -182,4 +182,4 @@ To be documented.
 
 ## License
 
-Copyright 2012 Dan "The Larkin" Larkin
+Copyright 2012 Dan Thé Larkin
