@@ -16,19 +16,33 @@
          (remove nil?)
          first)))
 
+(defn breakout-groups [urls]
+  (reduce
+   (fn [acc [pattern f]]
+     (if (coll? pattern)
+       (vec (concat acc
+                    (for [p pattern]
+                      [p f])))
+       (conj acc [pattern f])))
+   []
+   urls))
+
 (defn urls [& patterns]
   (let [{specials true
          urls false} (group-by (comp keyword? first)
                                (partition 2 2 patterns))]
     (if (and (even? (count patterns))
              (every? keyword? (map first specials))
-             (every? (partial instance? java.util.regex.Pattern)
+             (every? #(or (instance? java.util.regex.Pattern %)
+                          (and (coll? %)
+                               (every?
+                                (partial instance? java.util.regex.Pattern) %)))
                      (map first urls))
              (every? #(or (fn? %)
                           (and (var? %)
                                (fn? @%)))
                      (map second (concat specials urls))))
-      {:patterns urls
+      {:patterns (breakout-groups urls)
        :specials (into {} (map vec specials))}
       (throw (Exception. "patterns are malformed")))))
 

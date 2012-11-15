@@ -9,6 +9,9 @@
 (defn foo [& args]
   (conj args "foo"))
 
+(defn bar [& args]
+  (conj args "bar"))
+
 (deftest test-basic-url-dispatch
   (let [urls (dispatch/urls
               #"^/$" index
@@ -51,3 +54,24 @@
       (is (= index (dispatch/find-match urls "/")))
       (is (= foo (dispatch/find-match urls "/foo")))
       (is (nil? (dispatch/find-match urls "/missing"))))))
+
+(deftest test-grouping
+  (let [urls (dispatch/urls
+              [#"^/a/b/$" #"/a/b/c/" #"/a/b/c/d/"] index
+              #"^/foo$" foo)]
+    (is (= index (dispatch/find-match urls "/a/b/")))
+    (is (= index (dispatch/find-match urls "/a/b/c/")))
+    (is (= index (dispatch/find-match urls "/a/b/c/d/")))
+    (is (= foo (dispatch/find-match urls "/foo")))
+    (is (nil? (dispatch/find-match urls "/missing")))))
+
+(deftest test-grouping-precedence
+  (let [urls (dispatch/urls
+              #"^/$" index
+              [#"^/$" #"^/foo/$"] foo
+              #"^/$" foo
+              [#"^/$" #"^/bar/$" #"^/foo/$"] bar)]
+    (is (= index (dispatch/find-match urls "/")))
+    (is (= foo (dispatch/find-match urls "/foo/")))
+    (is (= bar (dispatch/find-match urls "/bar/")))
+    (is (nil? (dispatch/find-match urls "/missing")))))

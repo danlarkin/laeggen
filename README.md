@@ -91,7 +91,13 @@ optional arguments, or multiple arities:
    #"^/hello$" #'hello-world
    #"^/hello/([^/]+)" #'hello-world
    #"^/hello2$" #'hello-world2
-   #"^/hello2/([^/]+)" #'hello-world2
+   #"^/hello2/([^/]+)" #'hello-world2))
+
+;; patterns can also be grouped
+(def my-urls
+  (dispatch/urls
+   [#"^/hello$" #"^/hello/([^/]+)"] #'hello-world
+   [#"^/hello2$" #"^/hello2/([^/]+)"] #'hello-world2))
 ```
 
 ### Retrieving a query-string
