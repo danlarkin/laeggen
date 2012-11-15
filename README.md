@@ -1,7 +1,5 @@
 # Laeggen
 
-From the danish word for 'calf' (like your leg, not the cow).
-
 ## What is it?
 
 Laeggen is a routing library written on top of
@@ -184,8 +182,20 @@ entirely insecure. It is only put here as an example.
 
 ## Websockets
 
-To be documented.
+Just adorn your view function with `:async` metadata and laeggen will know it doesn't return a response. Then you can use [lamina](https://github.com/ztellman/lamina/) to receive and send messages asynchronously.
+
+```clojure
+(defn ^:async websocket-handler
+  [{:keys [channel] :as request}]
+  (lamina/enqueue channel "Hi, thanks for connecting.")
+  (lamina/receive-all channel (fn [msg] (prn "client sent:" msg))))
+
+(def my-urls
+  (dispatch/urls
+   #"^/subscribe$" #'websocket-handler))
+```
 
 ## License
 
-Copyright 2012 Dan Thé Larkin
+3-Clause BSD
+Copyright 2012 Dan Larkin
