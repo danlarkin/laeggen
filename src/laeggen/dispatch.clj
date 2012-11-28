@@ -51,7 +51,8 @@
                                   "collections of regular expressions"))))
         (throw (Exception. (str "patterns are malformed: "
                                 "specials should be keywords"))))
-      (throw (Exception. "patterns are malformed: odd number of patterns")))))
+      (throw (Exception. (str "patterns are malformed: "
+                              "odd count in patterns definition"))))))
 
 (defn merge-urls [& [urls & more-urls]]
   (reduce
