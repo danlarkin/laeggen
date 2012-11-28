@@ -31,20 +31,27 @@
   (let [{specials true
          urls false} (group-by (comp keyword? first)
                                (partition 2 2 patterns))]
-    (if (and (even? (count patterns))
-             (every? keyword? (map first specials))
-             (every? #(or (instance? java.util.regex.Pattern %)
-                          (and (coll? %)
-                               (every?
-                                (partial instance? java.util.regex.Pattern) %)))
-                     (map first urls))
-             (every? #(or (fn? %)
-                          (and (var? %)
-                               (fn? @%)))
-                     (map second (concat specials urls))))
-      {:patterns (breakout-groups urls)
-       :specials (into {} (map vec specials))}
-      (throw (Exception. "patterns are malformed")))))
+    (if (even? (count patterns))
+      (if (every? keyword? (map first specials))
+        (if (every? #(or (instance? java.util.regex.Pattern %)
+                         (and (coll? %)
+                              (every?
+                               (partial instance? java.util.regex.Pattern) %)))
+                    (map first urls))
+          (if (every? #(or (fn? %)
+                           (and (var? %)
+                                (fn? @%)))
+                      (map second (concat specials urls)))
+            {:patterns (breakout-groups urls)
+             :specials (into {} (map vec specials))}
+            (throw (Exception. (str "patterns are malformed: "
+                                    "targets should be functions or vars"))))
+          (throw (Exception. (str "patterns are malformed: "
+                                  "patterns should be regular expressions or "
+                                  "collections of regular expressions"))))
+        (throw (Exception. (str "patterns are malformed: "
+                                "specials should be keywords"))))
+      (throw (Exception. "patterns are malformed: odd number of patterns")))))
 
 (defn merge-urls [& [urls & more-urls]]
   (reduce
