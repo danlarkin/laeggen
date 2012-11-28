@@ -1,4 +1,4 @@
-(defproject laeggen "0.4"
+(defproject laeggen "0.5-SNAPSHOT"
   :description "I guess it's an HTTP server?"
   :url "https://github.com/danlarkin/laeggen/"
   :license {:name "3-Clause BSD"
