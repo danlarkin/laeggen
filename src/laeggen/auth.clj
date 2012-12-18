@@ -37,8 +37,11 @@
 ;; helpers
 
 (defn authorization-required [forward-uri f]
-  (fn [request & args]
-    (if-let [laeggen-id-value (authorized? request)]
-      (apply f (assoc request :laeggen-id-value laeggen-id-value) args)
-      {:status 302
-       :headers {"location" forward-uri}})))
+  (with-meta
+    (fn [request & args]
+      (println "for websocket check:" (:websocket request) " authorized:" (authorized? request))
+      (if-let [laeggen-id-value (authorized? request)]
+        (apply f (assoc request :laeggen-id-value laeggen-id-value) args)
+        {:status 302
+         :headers {"location" forward-uri}}))
+    (meta f)))
