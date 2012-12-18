@@ -9,7 +9,7 @@ easy to use, and powerful (since you do everything yourself).
 ## Usage
 
 ```clojure
-[laeggen "0.3"]
+[laeggen "0.5"]
 
 ;; In your project:
 (ns foo.bar
